@@ -24,25 +24,21 @@ fn part1(file: &str) -> u32 {
                 .map(|x| CharScore::from(*x).score)
                 .collect::<Vec<_>>()
         })
-        .collect::<Vec<Vec<u32>>>()
-        .iter()
         .flatten()
         .sum::<u32>()
 }
 
 fn part2(file: &str) -> u32 {
-    file.split('\n')
-        .collect::<Vec<&str>>()
-        .into_iter()
+    file.lines()
         .array_chunks::<3>()
-        .map(move |data| {
+        .map(|data| {
             (
                 data[0].chars().collect::<HashSet<char>>(),
                 data[1].chars().collect::<HashSet<char>>(),
                 data[2].chars().collect::<HashSet<char>>(),
             )
         })
-        .map(move |(a, b, c)| {
+        .map(|(a, b, c)| {
             let intersect = a.intersection(&c).map(|x| *x).collect::<HashSet<char>>();
             b.intersection(&intersect)
                 .map(|x| CharScore::from(*x).score)
