@@ -2,8 +2,10 @@ use std::{fs, str::FromStr};
 
 fn main() {
     let file = fs::read_to_string("file.txt").unwrap();
+
     let c = part1(&file);
     let d = part2(&file);
+
     dbg!(c);
     dbg!(d);
 }
