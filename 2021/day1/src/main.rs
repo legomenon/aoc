@@ -17,7 +17,7 @@ fn part1(file: &str) -> u32 {
         .map(|x| {
             if let Ordering::Greater = x.cmp(&current) {
                 current = x;
-                return x;
+                x
             } else {
                 current = x;
                 0
@@ -34,7 +34,6 @@ fn part2(file: &str) -> u32 {
         .collect::<Vec<_>>()
         .windows(3)
         .map(|x| x.iter().sum::<u32>())
-        .inspect(|x| println!("{:?}", x))
         .map(|x| x.to_string())
         .collect::<Vec<_>>()
         .join("\n");
