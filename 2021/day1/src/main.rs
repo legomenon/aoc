@@ -1,4 +1,3 @@
-use std::cmp::Ordering;
 use std::fs;
 
 fn main() {
@@ -15,13 +14,13 @@ fn part1(file: &str) -> u32 {
     file.split('\n')
         .map(|x| x.parse::<u32>().unwrap())
         .map(|x| {
-            if let Ordering::Greater = x.cmp(&current) {
-                current = x;
-                x
-            } else {
-                current = x;
-                0
-            }
+            let result = match x.cmp(&current) {
+                std::cmp::Ordering::Less => 0,
+                std::cmp::Ordering::Equal => 0,
+                std::cmp::Ordering::Greater => x,
+            };
+            current = x;
+            result
         })
         .filter(|x| *x != 0)
         .count() as u32
