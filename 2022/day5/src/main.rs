@@ -10,7 +10,8 @@ fn main() {
     let a = fs::read_to_string("file.txt").unwrap();
     let commands = parse_commands(&a);
     let cargo = parse_crates(&a);
-    dbg!(execute_commands(commands, cargo));
+    // dbg!(execute_commands(commands, cargo));
+    dbg!(execute_commands_at_once(commands, cargo));
 }
 
 fn parse_crates(file: &str) -> Vec<Vec<String>> {
@@ -95,6 +96,28 @@ fn execute_commands(commands: Vec<Command>, cargo: Vec<Vec<String>>) -> String {
             let crg = cargo[command.from].pop().unwrap();
             cargo[command.to].push(crg)
         }
+    }
+    // dbg!(&cargo);
+    let result = cargo
+        .into_iter()
+        .map(move |x| x.last().unwrap().clone())
+        .collect::<Vec<String>>()
+        .join("");
+
+    result
+}
+
+fn execute_commands_at_once(commands: Vec<Command>, cargo: Vec<Vec<String>>) -> String {
+    let mut cargo = cargo;
+    for command in commands.iter() {
+        let mut result_vec: Vec<String> = Vec::new();
+        for _i in 0..command.quantity {
+            let crg = cargo[command.from].pop().unwrap();
+            result_vec.push(crg);
+            // cargo[command.to].push(crg)
+        }
+        let mut result_vec = result_vec.into_iter().rev().collect::<Vec<String>>();
+        cargo[command.to].append(&mut result_vec);
     }
     // dbg!(&cargo);
     let result = cargo
