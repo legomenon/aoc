@@ -3,6 +3,7 @@ use std::fs;
 fn main() {
     let file = fs::read_to_string("file.txt").unwrap();
     let vec_input = parse(&file);
+
     let p1 = part1(&vec_input);
     let p2 = part2(&vec_input);
 
@@ -33,8 +34,6 @@ fn part2(vec_input: &Vec<Vec<u32>>) -> u32 {
             let cols = transpose(x.to_vec());
             part1(&cols)
         })
-        .collect::<Vec<u32>>()
-        .iter()
         .sum::<u32>()
 }
 
