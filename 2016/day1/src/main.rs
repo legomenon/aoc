@@ -1,4 +1,4 @@
-use std::{fs, str::FromStr};
+use std::{collections::HashSet, fs, str::FromStr};
 
 #[derive(Debug, Clone, Copy)]
 enum Direction {
@@ -15,25 +15,31 @@ enum Instruction {
 }
 
 #[derive(Debug)]
-struct Position {
+struct ElfPosition {
     pos: (i32, i32),
     direction: Direction,
+    visited_pos: HashSet<(i32, i32)>,
+    visited_twice: Option<i32>,
 }
 fn main() {
     let file = fs::read_to_string("file.txt").unwrap();
     let inst_vec = parse(&file);
 
-    let mut p1 = Position::new();
+    let mut p1 = ElfPosition::new();
     p1.execute_instructions(&inst_vec);
+    let p2 = p1.visited_twice.unwrap();
 
-    dbg!(p1.position());
+    dbg!(p1.position(), p1.direction);
+    dbg!(p2);
 }
 
-impl Position {
+impl ElfPosition {
     fn new() -> Self {
         Self {
             pos: (0, 0),
             direction: Direction::North,
+            visited_pos: HashSet::new(),
+            visited_twice: None,
         }
     }
 
@@ -49,14 +55,22 @@ impl Position {
     }
     fn walk(&mut self, instruction: &Instruction) {
         let step = match instruction {
-            Instruction::Left(i) => i,
-            Instruction::Right(i) => i,
+            Instruction::Left(i) => *i,
+            Instruction::Right(i) => *i,
         };
-        match self.direction {
-            Direction::North => self.pos.1 -= step,
-            Direction::East => self.pos.0 += step,
-            Direction::South => self.pos.1 += step,
-            Direction::West => self.pos.0 -= step,
+
+        for _ in 1..=step {
+            dbg!(self.pos);
+            match self.direction {
+                Direction::North => self.pos.1 -= 1,
+                Direction::East => self.pos.0 += 1,
+                Direction::South => self.pos.1 += 1,
+                Direction::West => self.pos.0 -= 1,
+            }
+  
+            if self.visited_twice.is_none() {
+                self.is_visited();
+            }
         }
     }
 
@@ -67,6 +81,18 @@ impl Position {
         };
 
         self.direction = Direction::try_from(direction).unwrap();
+    }
+
+    fn is_visited(&mut self) {
+        let pos = (self.pos.0, self.pos.1);
+
+        match self.visited_pos.contains(&pos) {
+            true => self.visited_twice = Some(self.pos.0.abs() + self.pos.1.abs()),
+
+            false => {
+                self.visited_pos.insert(pos);
+            }
+        }
     }
 }
 
