@@ -1,4 +1,4 @@
-use std::{fs, io, path::Path, str::FromStr};
+use std::{fs, io, str::FromStr};
 
 #[derive(Debug, Default)]
 struct SubPosition {
@@ -63,7 +63,7 @@ impl SubPosition {
             }
         }
     }
-    
+
     fn result_position(self) -> u32 {
         self.x * self.y
     }
