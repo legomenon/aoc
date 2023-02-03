@@ -18,20 +18,13 @@ struct Keypad {
 
 fn main() {
     let file = fs::read_to_string("file.txt").unwrap();
-    let result = file
-        .lines()
-        .map(|x| {
-            x.chars()
-                .map(|c| c.to_string().parse::<Command>().unwrap())
-                .collect::<Vec<Command>>()
-        })
-        .collect::<Vec<Vec<Command>>>();
+    let commands_vec = parse(&file);
 
     let mut keypad = Keypad::new_part1();
-    let p1 = keypad.execute_commands(&result);
+    let p1 = keypad.execute_commands(&commands_vec);
 
     let mut keypad2 = Keypad::new_part2();
-    let p2 = keypad2.execute_commands_part2(&result);
+    let p2 = keypad2.execute_commands_part2(&commands_vec);
     dbg!(p1, p2);
 }
 
@@ -124,4 +117,14 @@ impl FromStr for Command {
             _ => Err("Invalid command: {}".to_owned()),
         }
     }
+}
+
+fn parse(file: &str) -> Vec<Vec<Command>> {
+    file.lines()
+        .map(|x| {
+            x.chars()
+                .map(|c| c.to_string().parse::<Command>().unwrap())
+                .collect::<Vec<Command>>()
+        })
+        .collect::<Vec<Vec<Command>>>()
 }
