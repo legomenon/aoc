@@ -26,13 +26,8 @@ fn part1(forest: &Vec<Vec<char>>, step: usize) -> usize {
 fn part2(forest: &Vec<Vec<char>>, max_step: usize) -> usize {
     let mut result: Vec<usize> = Vec::new();
 
-    let steps = (1..=max_step)
-        .filter(|i| i % 2 != 0)
-        .collect::<Vec<usize>>();
-
-    for i in steps {
-        result.push(part1(forest, i))
-    }
+    let steps: Vec<usize> = (1..=max_step).filter(|i| i % 2 != 0).collect();
+    steps.iter().map(|&i| result.push(part1(forest, i))).count();
 
     let down_2 = forest
         .iter()
