@@ -5,21 +5,7 @@ fn main() {
     let len = file.lines().take(1).map(|x| x.len()).sum::<usize>();
 
     let mut diag_vec = create_diagnostic_vec(len);
-
-    let _result = file
-        .lines()
-        .map(|x| {
-            x.chars()
-                .enumerate()
-                .map(|(i, c)| {
-                    diag_vec[i]
-                        .entry(c)
-                        .and_modify(|counter| *counter += 1)
-                        .or_insert(1);
-                })
-                .collect::<Vec<_>>()
-        })
-        .collect::<Vec<_>>();
+    get_frequency(&file, &mut diag_vec);
 
     let p1 = get_gamma_rate(&diag_vec);
     let p1_1 = get_epsilon_rate(&diag_vec);
@@ -67,4 +53,20 @@ fn get_power_consumption(gamma: &str, epsilon: &str) -> u32 {
     let epsilon = u32::from_str_radix(epsilon, 2).unwrap();
 
     gamma * epsilon
+}
+
+fn get_frequency(file: &str, diag_vec: &mut Vec<HashMap<char, u32>>) {
+    file.lines()
+        .map(|x| {
+            x.chars()
+                .enumerate()
+                .map(|(i, c)| {
+                    diag_vec[i]
+                        .entry(c)
+                        .and_modify(|counter| *counter += 1)
+                        .or_insert(1);
+                })
+                .count()
+        })
+        .count();
 }
