@@ -56,17 +56,12 @@ fn get_power_consumption(gamma: &str, epsilon: &str) -> u32 {
 }
 
 fn get_frequency(file: &str, diag_vec: &mut Vec<HashMap<char, u32>>) {
-    file.lines()
-        .map(|x| {
-            x.chars()
-                .enumerate()
-                .map(|(i, c)| {
-                    diag_vec[i]
-                        .entry(c)
-                        .and_modify(|counter| *counter += 1)
-                        .or_insert(1);
-                })
-                .count()
+    file.lines().for_each(|x| {
+        x.chars().enumerate().for_each(|(i, c)| {
+            diag_vec[i]
+                .entry(c)
+                .and_modify(|counter| *counter += 1)
+                .or_insert(1);
         })
-        .count();
+    });
 }

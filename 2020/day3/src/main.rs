@@ -29,17 +29,7 @@ fn part2(forest: &Vec<Vec<char>>, max_step: usize) -> usize {
     let steps: Vec<usize> = (1..=max_step).filter(|i| i % 2 != 0).collect();
     steps.iter().map(|&i| result.push(part1(forest, i))).count();
 
-    let down_2 = forest
-        .iter()
-        .cloned()
-        .enumerate()
-        .filter_map(move |(i, row)| {
-            if i % 2 == 0 {
-                return Some(row);
-            }
-            None
-        })
-        .collect::<Vec<_>>();
+    let down_2 = forest.iter().cloned().step_by(2).collect::<Vec<_>>();
 
     result.push(part1(&down_2, 1));
 
