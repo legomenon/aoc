@@ -2,21 +2,20 @@ use std::fs;
 
 fn main() {
     let file = fs::read_to_string("file.txt").unwrap();
-    let calories = parse(&file);
+    let mut calories = parse(&file);
 
     let p1 = part1(&calories);
-    let p2 = part2(&calories);
+    let p2 = part2(&mut calories);
     dbg!(p1, p2);
 }
 
-fn part1(v: &Vec<u32>) -> u32 {
-    *v.into_iter().max().unwrap()
+fn part1(v: &[u32]) -> u32 {
+    *v.iter().max().unwrap()
 }
 
-fn part2(v: &Vec<u32>) -> u32 {
-    let mut part2_v = v.clone();
-    part2_v.sort_by(|a, b| b.cmp(a));
-    part2_v.iter().take(3).sum::<u32>()
+fn part2(v: &mut [u32]) -> u32 {
+    v.sort_by(|a, b| b.cmp(a));
+    v.iter().take(3).sum::<u32>()
 }
 
 fn parse(file: &str) -> Vec<u32> {
