@@ -49,8 +49,8 @@ impl ElfPosition {
 
     fn execute_instructions(&mut self, instructions: &Vec<Instruction>) {
         for inst in instructions {
-            self.change_direction(&inst);
-            self.walk(&inst);
+            self.change_direction(inst);
+            self.walk(inst);
         }
     }
     fn walk(&mut self, instruction: &Instruction) {
@@ -67,7 +67,7 @@ impl ElfPosition {
                 Direction::South => self.pos.1 += 1,
                 Direction::West => self.pos.0 -= 1,
             }
-  
+
             if self.visited_twice.is_none() {
                 self.is_visited();
             }
@@ -77,7 +77,7 @@ impl ElfPosition {
     fn change_direction(&mut self, instruction: &Instruction) {
         let direction = match instruction {
             Instruction::Left(_) => (self.direction as i32 - 1) % 4,
-            Instruction::Right(_) => (self.direction as i32) + 1 % 4,
+            Instruction::Right(_) => ((self.direction as i32) + 1) % 4,
         };
 
         self.direction = Direction::try_from(direction).unwrap();
@@ -100,12 +100,12 @@ impl FromStr for Instruction {
     type Err = String;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        match s.chars().nth(0).unwrap() {
-            'L' => match s.replace("L", "").parse::<i32>() {
+        match s.chars().next().unwrap() {
+            'L' => match s.replace('L', "").parse::<i32>() {
                 Ok(i) => Ok(Instruction::Left(i)),
                 Err(_) => Err("Invalid instruction".to_owned()),
             },
-            'R' => match s.replace("R", "").parse::<i32>() {
+            'R' => match s.replace('R', "").parse::<i32>() {
                 Ok(i) => Ok(Instruction::Right(i)),
                 Err(_) => Err("Invalid instruction".to_owned()),
             },
