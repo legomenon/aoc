@@ -53,14 +53,14 @@ impl Keypad {
         }
     }
 
-    fn execute_commands(&mut self, commands: &Vec<Vec<Command>>) -> String {
+    fn execute_commands(&mut self, commands: &[Vec<Command>]) -> String {
         commands
             .iter()
             .map(|c| self.press_part1(c))
             .collect::<String>()
     }
 
-    fn execute_commands_part2(&mut self, commands: &Vec<Vec<Command>>) -> String {
+    fn execute_commands_part2(&mut self, commands: &[Vec<Command>]) -> String {
         commands
             .iter()
             .map(|c| self.press_part2(c))
