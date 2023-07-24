@@ -38,21 +38,21 @@ impl PartialOrd for Game {
         } else if *self == Game::Rock && *other == Game::Scissors {
             return Some(Ordering::Greater);
         }
-        return Some((*self as u8).cmp(&(*other as u8)));
+        Some((*self as u8).cmp(&(*other as u8)))
     }
 }
 
 fn part1(file: &str) -> Option<u32> {
     let result = file
         .lines()
-        .map(|x| x.split(" "))
+        .map(|x| x.split(' '))
         .map(|x| x.collect::<Vec<&str>>())
         .map(|x| (x[0].parse::<Game>().unwrap(), x[1].parse::<Game>().unwrap()))
         .map(
             |(opponent, player)| match player.partial_cmp(&opponent).unwrap() {
-                Ordering::Greater => player as u32 + 6 as u32,
-                Ordering::Equal => player as u32 + 3 as u32,
-                Ordering::Less => player as u32 + 0 as u32,
+                Ordering::Greater => player as u32 + 6,
+                Ordering::Equal => player as u32 + 3,
+                Ordering::Less => player as u32,
             },
         )
         .sum::<u32>();
@@ -82,7 +82,7 @@ impl FromStr for RoundEnd {
 fn part2(file: &str) -> Option<u32> {
     let result = file
         .lines()
-        .map(|x| x.split(" "))
+        .map(|x| x.split(' '))
         .map(|x| x.collect::<Vec<&str>>())
         .map(|x| {
             (
