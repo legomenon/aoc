@@ -1,12 +1,13 @@
 use std::{collections::HashMap, fs};
 
-fn main() {
-    let data = fs::read_to_string("data.txt").expect("Failed to read file");
+fn main() -> Result<(), std::io::Error> {
+    let data = fs::read_to_string("data.txt")?;
     let data = parse(&data);
     let p1 = part1(&data);
     let p2 = part2(&data);
 
     dbg!(p1, p2);
+    Ok(())
 }
 
 fn part1(v: &[String]) -> i32 {
@@ -42,8 +43,7 @@ fn part1(v: &[String]) -> i32 {
 fn part2(v: &[String]) -> String {
     for i in v.iter() {
         for j in v {
-            let res = str_diff(i, j);
-            if !res.is_empty() {
+            if let Some(res) = str_diff(i, j) {
                 return res;
             }
         }
@@ -56,7 +56,7 @@ fn parse(s: &str) -> Vec<String> {
     s.lines().map(|s| s.to_owned()).collect()
 }
 
-fn str_diff(l: &str, r: &str) -> String {
+fn str_diff(l: &str, r: &str) -> Option<String> {
     let mut diff = 0;
     let mut diff_index = 0;
 
@@ -66,11 +66,12 @@ fn str_diff(l: &str, r: &str) -> String {
             diff_index = i;
         }
     });
+
     if diff == 1 {
-        let mut res = l.clone().to_owned();
+        let mut res = l.to_owned();
         res.remove(diff_index);
-        res
+        Some(res)
     } else {
-        "".to_owned()
+        None
     }
 }
