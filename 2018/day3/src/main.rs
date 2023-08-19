@@ -12,7 +12,6 @@ fn main() -> Result<(), io::Error> {
     let data = parse(&data);
 
     let p1 = part1(&data);
-
     dbg!(p1);
 
     Ok(())
@@ -21,21 +20,14 @@ fn main() -> Result<(), io::Error> {
 fn part1(v: &[Claim]) -> u32 {
     let mut fabric: HashMap<(u32, u32), (u32, u32)> = HashMap::new();
 
-    for a in v {
-        let x_min = a.x_y.0;
-        let x_max = a.x_y.0 + a.size.0;
-
-        let y_min = a.x_y.1;
-        let y_max = a.x_y.1 + a.size.1;
-        for i in x_min..x_max {
-            for j in y_min..y_max {
-                fabric
-                    .entry((i, j))
-                    .and_modify(|counter| counter.0 += 1)
-                    .or_insert((0, a.id));
-            }
-        }
-    }
+    v.iter().map(ClaimPoints::new).for_each(|claim| {
+        claim.into_iter().for_each(|point| {
+            fabric
+                .entry(point)
+                .and_modify(|counter| counter.0 += 1)
+                .or_insert((0, claim.claim.id));
+        })
+    });
 
     let res = fabric
         .iter()
@@ -68,15 +60,43 @@ impl FromStr for Claim {
         Ok(Self {
             id,
             x_y: (x1, y1),
-            size: (x2, y2),
+            size: (x2 - 1, y2 - 1),
         })
     }
 }
 
-impl Iterator for Claim {
+#[derive(Debug, Clone, Copy)]
+struct ClaimPoints<'a> {
+    claim: &'a Claim,
+    current_x: u32,
+    current_y: u32,
+}
+
+impl<'a> ClaimPoints<'a> {
+    fn new(claim: &'a Claim) -> Self {
+        ClaimPoints {
+            claim,
+            current_x: claim.x_y.0,
+            current_y: claim.x_y.1,
+        }
+    }
+}
+
+impl<'a> Iterator for ClaimPoints<'a> {
     type Item = (u32, u32);
 
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        if self.current_y <= self.claim.x_y.1 + self.claim.size.1 {
+            let result = (self.current_x, self.current_y);
+            if self.current_x < self.claim.x_y.0 + self.claim.size.0 {
+                self.current_x += 1;
+            } else {
+                self.current_x = self.claim.x_y.0;
+                self.current_y += 1;
+            }
+            Some(result)
+        } else {
+            None
+        }
     }
 }
